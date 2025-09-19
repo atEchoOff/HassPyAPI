@@ -100,7 +100,7 @@ class BedRoom:
             if not self.power_button.matches(event):
                 return None
             
-            return event.get("new_state").get("attributes").get("event_type") == "initial_press"
+            return event.get("new_state").get("event_type") == "initial_press"
         
         @self.listener.trigger_when(power_button_pressed)
         def toggle_lights(event):
@@ -125,7 +125,7 @@ class BedRoom:
                 # Event must belong to main_room_fan_button
                 return None
             
-            return event.get("new_state").get("attributes").get("event_type") == "initial_press"
+            return event.get("new_state").get("event_type") == "initial_press"
         
         @self.listener.trigger_when(fan_button_pressed)
         def toggle_fan(event):
