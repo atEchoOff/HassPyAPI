@@ -82,6 +82,28 @@ class HassEventListener:
                 # conditions are not met, it is valid, and we should not ignore it, so we reset time
                 self.last_false[i] = time_ns()
 
+    def _json_diff(self, result_old, result_new, original_key, old, new):
+        '''
+        Construct a json diff of old and new, save in result_old and result_new
+        result_old: dictionary mapping leaf keys to old values (if changed)
+        result_new: dictionary mapping leaf keys to new values (if changed)
+        original_key: current key of the current json (None if root)
+        old: old json
+        new: new json
+
+        Results in a flattened event containing only changes, which helps clean up poor event structure
+        '''
+        if isinstance(old, dict) and isinstance(new, dict):
+            old_diff, new_diff = {}, {}
+            keys = set(old.keys()) | set(new.keys())
+            for key in keys:
+                self._json_diff(result_old, result_new, key, old.get(key), new.get(key))
+        else:
+            # old and new should be strings. If they differ, add to result_old and result_new
+            if old != new:
+                result_old[original_key] = old
+                result_new[original_key] = new
+
     async def _listen(self):
         '''
         Private helper function which subscribes a websocket and recieves event messages
@@ -94,6 +116,14 @@ class HassEventListener:
 
                 if msg.get("type") == "event" and msg.get("event").get("event_type") == "state_changed":
                     msg = msg.get("event").get("data")
+
+                    old_state = {}
+                    new_state = {}
+                    self._json_diff(old_state, new_state, None, msg.get("old_state"), msg.get("new_state"))
+
+                    msg = {'entity_id': msg.get("entity_id"),
+                           'old_state': old_state,
+                           'new_state': new_state}
 
                     self._fire_events(msg)
 
