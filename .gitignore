@@ -1,4 +1,6 @@
 .venv
 *__pycache__*
+Brian
+__main__.py
 hass_key
 hass.log
