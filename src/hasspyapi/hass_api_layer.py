@@ -53,6 +53,17 @@ class HassApiLayer:
         '''
         return self._post(f"services/{device_type}/toggle", entity_id, **attributes)
     
+    def google_assistant(self, command):
+        '''
+        Send a text command to Google Assistant SDK (if already set up in hass)
+        '''
+        data = {"command": command}
+        response = requests.post(self.api_url + "services/google_assistant_sdk/send_text_command", json=data, headers=self.api_headers)
+        if response.status_code != 200:
+            raise RuntimeError(f"There was an error sending google assistant command: {response.text}")
+        
+        return response.json()
+    
     def states(self, entity_id):
         '''
         Safely access the states service endpoint

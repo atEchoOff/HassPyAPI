@@ -148,9 +148,15 @@ class HassCommand:
         '''
         result = []
         for device in self.devices:
-            result.append(self.api_layer.turn_off(device["entity_id"], device["device"]))
+            result.append(self.api_layer.turn_off(device["entity_id"], device["type"]))
 
         return self._refine(result)
+    
+    def google_assistant(self, command):
+        '''
+        Send a text command to Google Assistant SDK (if already set up in hass)
+        '''
+        return self.api_layer.google_assistant(command)
     
     def toggle(self, **attributes):
         '''
@@ -160,6 +166,6 @@ class HassCommand:
         '''
         result = []
         for device in self.devices:
-            result.append(self.api_layer.toggle(device["entity_id"], device["device"], **attributes))
+            result.append(self.api_layer.toggle(device["entity_id"], device["type"], **attributes))
 
         return self._refine(result)
