@@ -17,7 +17,7 @@ if __name__ == "__main__":
     import signal
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-    home = Home("homeassistant.local:8123", open("hass_key", "r").read())
+    home = Home("localhost:8123", open("hass_key", "r").read())
     print("Home initialized")
 
     listener = home.listener()

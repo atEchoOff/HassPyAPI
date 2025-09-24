@@ -220,4 +220,5 @@ class BedRoom:
         
         @self.listener.trigger_when(power_button_pressed)
         def toggle_lights(event):
+            logger.info("Toggling closet light from light switch")
             self.closet_light.toggle()
