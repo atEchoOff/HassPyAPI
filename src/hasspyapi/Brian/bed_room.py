@@ -138,9 +138,9 @@ class BedRoom:
     @script
     def night_temperature(self):
         '''
-        Ensure the bedroom temperature stays between 70 and 72
+        Ensure the bedroom temperature stays between 72 and 74
         '''
-        def temperature_below_70(event):
+        def temperature_below_72(event):
             if event:
                 return None
             
@@ -155,14 +155,14 @@ class BedRoom:
                 return False
             
             print(f"Current bedroom temperature: {self.temperature.get_state()}")
-            return float(self.temperature.get_state()) < 70
+            return float(self.temperature.get_state()) < 72
 
-        @self.listener.trigger_when(temperature_below_70, duration = 60)
+        @self.listener.trigger_when(temperature_below_72, duration = 60)
         def raise_temperature(event):
             logger.info("Raising the temperature in the bedroom to 80")
             self.google_assistant("Set the thermostat to 80 degrees")
 
-        def temperature_above_72(event):
+        def temperature_above_74(event):
             if event:
                 return None
             
@@ -176,9 +176,9 @@ class BedRoom:
                 # We are not asleep
                 return False
             
-            return float(self.temperature.get_state()) > 72
+            return float(self.temperature.get_state()) > 74
         
-        @self.listener.trigger_when(temperature_above_72, duration = 60)
+        @self.listener.trigger_when(temperature_above_74, duration = 60)
         def lower_temperature(event):
             logger.info("Lowering the temperature in the bedroom to 65")
             self.google_assistant("Set the thermostat to 65 degrees")
@@ -204,29 +204,20 @@ class BedRoom:
             logger.info("Resetting the temperature to 76")
             self.google_assistant("Set the thermostat to 76 degrees")
 
-    # @script
-    # def closet_light_switch(self):
-    #     '''
-    #     Let the top button of the light switch toggle the lights of the closet
-    #     If the lights are in any intermediate state or off, switch turns them on
-    #     If the lights are on, turn them off
-    #     '''
+    @script
+    def closet_light_switch(self):
+        '''
+        Let the top button of the light switch toggle the lights of the closet
+        If the lights are in any intermediate state or off, switch turns them on
+        If the lights are on, turn them off
+        '''
 
-    #     def power_button_pressed(event):
-    #         if not self.closet_power_button.matches(event):
-    #             return None
+        def power_button_pressed(event):
+            if not self.closet_power_button.matches(event):
+                return None
             
-    #         return event.get("new_state").get("event_type") == "initial_press"
+            return event.get("new_state").get("event_type") == "initial_press"
         
-    #     @self.listener.trigger_when(power_button_pressed)
-    #     def toggle_lights(event):
-    #         if self.lights_are_bright():
-    #             # Turn off
-    #             logger.info("Turning off lights from light switch")
-    #             self.lights.turn_off()
-    #             self.supress_motion = True
-    #         else:
-    #             # Turn on
-    #             logger.info("Turning on lights from light switch")
-    #             self.lights.turn_on(**self.default_light_settings)
-    #             self.supress_motion = False
+        @self.listener.trigger_when(power_button_pressed)
+        def toggle_lights(event):
+            self.closet_light.toggle()
