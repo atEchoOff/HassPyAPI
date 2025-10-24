@@ -42,7 +42,7 @@ class HassEventListener:
 
         return decorator
     
-    def _fire_events(self, msg):
+    def fire_event(self, msg):
         '''
         Fire off all events if conditions are met
         Also handle duration checks
@@ -125,14 +125,14 @@ class HassEventListener:
                            'old_state': old_state,
                            'new_state': new_state}
 
-                    self._fire_events(msg)
+                    self.fire_event(msg)
 
     def _periodically_check(self, interval):
         '''
         Every interval seconds, fire all events with None as parameter
         '''
         while True:
-            self._fire_events(None)
+            self.fire_event(None)
 
             sleep(interval)
 
