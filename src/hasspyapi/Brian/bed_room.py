@@ -21,8 +21,8 @@ class BedRoom:
     
         self.lights = bedroom.filter(type = "light")
 
-        self.non_fan_lights = self.lights.filter(name = "!Bedroom Ceiling Light")
-        self.fan_light = self.lights.filter(name = "Bedroom Ceiling Light")
+        self.non_fan_lights = self.lights.filter(name = "!Ceiling Light")
+        self.fan_light = self.lights.filter(name = "Ceiling Light")
 
         self.fan = bedroom.filter(type = "fan").get()
 
