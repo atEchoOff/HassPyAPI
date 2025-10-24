@@ -21,6 +21,9 @@ class BedRoom:
     
         self.lights = bedroom.filter(type = "light")
 
+        self.non_fan_lights = self.lights.filter(name = "!Bedroom Ceiling Light")
+        self.fan_light = self.lights.filter(name = "Bedroom Ceiling Light")
+
         self.fan = bedroom.filter(type = "fan").get()
 
         self.temperature = bedroom.filter(name = "*Sensor Temperature*").get()
@@ -99,8 +102,14 @@ class BedRoom:
         @self.listener.trigger_when(some_fingers)
         def change_bedroom_brightness(event):
             brightness_level = int(event.get("msg")) * 64
+            print(self.non_fan_lights.devices)
 
-            self.lights.turn_on(brightness = brightness_level)
+            if brightness_level == 256:
+                self.fan_light.turn_on()
+            else:
+                self.fan_light.turn_off()
+
+            self.non_fan_lights.turn_on(brightness = brightness_level)
 
             logger.info("Setting the brightness level to " + str(brightness_level) + " due to hand signal")
 
