@@ -63,6 +63,8 @@ class HandListener:
                         if hand.only(FingerTips.INDEX, FingerTips.MIDDLE, FingerTips.RING, FingerTips.PINKY):
                             hand_events.append("4")
 
+                    print(hand_events)
+
                     self.handle.update(hand_events)
 
                     events_to_fire = self.handle.all_true_for(self.seconds)
