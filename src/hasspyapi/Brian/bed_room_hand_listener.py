@@ -74,4 +74,6 @@ class HandListener:
                         event["entity_id"] = "hand.bedroom"
                         event["msg"] = event_to_fire
 
+                        print("Trying to fire event: " + event_to_fire)
+
                         self.listener.fire_event(event)
