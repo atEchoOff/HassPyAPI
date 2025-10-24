@@ -1,5 +1,6 @@
 import logging
 import datetime
+from bed_room_hand_listener import HandListener
 
 from ..hass_scripts import start_scripts, script
 logger = logging.getLogger(__name__)
@@ -30,6 +31,8 @@ class BedRoom:
         self.supress_motion = False
 
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
+
+        HandListener(listener, 1)
 
         start_scripts(self)
 

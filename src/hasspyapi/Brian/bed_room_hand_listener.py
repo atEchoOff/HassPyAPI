@@ -1,5 +1,6 @@
 import json
 import serial
+from threading import Thread
 
 from .HandGestures.hand import FingerTips, Hand
 from .HandGestures.status_handle import StatusHandle
@@ -22,6 +23,8 @@ class HandListener:
         self.seconds = seconds
 
         self.handle = StatusHandle()
+
+        Thread(target=self.read_from_usb).start()
 
     def read_from_usb(self):
         '''
