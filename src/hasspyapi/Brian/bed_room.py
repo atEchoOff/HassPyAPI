@@ -60,11 +60,9 @@ class BedRoom:
                 # This is not event driven
                 return None
             
-            if event.get("event_id") != "hand.bedroom":
+            if event.get("entity_id") != "hand.bedroom":
                 # This event belongs a different device
                 return None
-            else:
-                print("This event belongs to me")
             return True
         
         # Turn off lights after 15 seconds

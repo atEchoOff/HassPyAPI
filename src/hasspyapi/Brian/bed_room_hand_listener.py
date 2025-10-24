@@ -63,8 +63,6 @@ class HandListener:
                         if hand.only(FingerTips.INDEX, FingerTips.MIDDLE, FingerTips.RING, FingerTips.PINKY):
                             hand_events.append("4")
 
-                    print(hand_events)
-
                     self.handle.update(hand_events)
 
                     events_to_fire = self.handle.all_true_for(self.seconds)
@@ -73,7 +71,5 @@ class HandListener:
                         event = {}
                         event["entity_id"] = "hand.bedroom"
                         event["msg"] = event_to_fire
-
-                        print("Trying to fire event: " + event_to_fire)
 
                         self.listener.fire_event(event)
