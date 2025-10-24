@@ -45,6 +45,23 @@ class BedRoom:
             return False
         else:
             return True
+        
+    @script
+    def show_hands(self):
+        '''
+        Just print something when hands are detected in the bedroom
+        '''
+        def hand_message(event):
+            if event.get("event_id") != "hand.bedroom":
+                # This event belongs a different device
+                return None
+            
+            return True
+        
+        # Turn off lights after 15 seconds
+        @self.listener.trigger_when(hand_message)
+        def power_off_lights(event):
+            logger.info("Found a hand: " + event.get("msg"))
 
     @script
     def save_power(self):
