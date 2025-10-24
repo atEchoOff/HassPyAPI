@@ -21,6 +21,8 @@ class HassCommand:
         ex. HassCommand().filter(area_id = area_id) returns a HassCommand object whose devices are all in area area_id.
 
         For kwarg values that start/end with *, they are treated like the Kleene star (match anything)
+
+        For kwarg values that start with !, the filter will filter out devices that match the subsequent string.
         '''
 
         # Persist a new list of devices
@@ -44,6 +46,11 @@ class HassCommand:
                 elif kwargs[kwarg].endswith("*"):
                     if not device[kwarg].startswith(kwargs[kwarg][:-1]):
                         # device[kwarg] does not start with kwargs[kwarg]
+                        break
+
+                elif kwargs[kwarg].startswith("!"):
+                    if device[kwarg] == kwargs[kwarg][1:]:
+                        # device[kwarg] matches kwargs[kwarg], which we do not want
                         break
                     
                 elif device[kwarg] != kwargs[kwarg]:
