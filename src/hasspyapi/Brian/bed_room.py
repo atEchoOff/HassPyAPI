@@ -55,6 +55,7 @@ class BedRoom:
         Just print something when hands are detected in the bedroom
         '''
         def hand_message(event):
+            print(event)
             if not event:
                 # This is not event driven
                 return None
