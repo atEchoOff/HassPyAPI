@@ -52,6 +52,10 @@ class BedRoom:
         Just print something when hands are detected in the bedroom
         '''
         def hand_message(event):
+            if not event:
+                # This is not event driven
+                return None
+            
             if event.get("event_id") != "hand.bedroom":
                 # This event belongs a different device
                 return None
