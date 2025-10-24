@@ -34,6 +34,7 @@ class HandListener:
             if self.ser.in_waiting > 0:
                 msg = self.ser.readline().decode('utf-8', errors='ignore').strip()
                 if msg:
+                    print(msg)
                     hands_fingers = json.loads(msg)
 
                     hands = []
