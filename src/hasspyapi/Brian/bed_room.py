@@ -1,6 +1,6 @@
 import logging
 import datetime
-from bed_room_hand_listener import HandListener
+from .bed_room_hand_listener import HandListener
 
 from ..hass_scripts import start_scripts, script
 logger = logging.getLogger(__name__)
