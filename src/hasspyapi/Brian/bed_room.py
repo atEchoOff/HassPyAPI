@@ -76,6 +76,35 @@ class BedRoom:
             logger.info("Toggling the fan due to hand signal")
 
     @script
+    def hand_signal_light_brightness(self):
+        '''
+        Change the light brightness from hand signals
+        '''
+        def some_fingers(event):
+            if not event:
+                # This is not event driven
+                return None
+            
+            if event.get("entity_id") != "hand.bedroom":
+                # This event belongs a different device
+                return None
+            
+            if event.get("msg") not in {"0", "1", "2", "3", "4"}:
+                # This is the wrong hand signal
+                return None
+            
+            return True
+        
+        # Toggle the fan
+        @self.listener.trigger_when(some_fingers)
+        def change_bedroom_brightness(event):
+            brightness_level = int(event.get("msg")) * 64
+
+            self.lights.turn_on(brightness = brightness_level)
+
+            logger.info("Setting the brightness level to " + str(brightness_level) + " due to hand signal")
+
+    @script
     def save_power(self):
         '''
         Turn off all lights when there is no motion for 15 minutes
