@@ -102,7 +102,6 @@ class BedRoom:
         @self.listener.trigger_when(some_fingers)
         def change_bedroom_brightness(event):
             brightness_level = int(event.get("msg")) * 64
-            print(self.non_fan_lights.devices)
 
             if brightness_level == 256:
                 self.fan_light.turn_on()
