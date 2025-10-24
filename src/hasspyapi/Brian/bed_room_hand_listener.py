@@ -34,12 +34,13 @@ class HandListener:
             if self.ser.in_waiting > 0:
                 msg = self.ser.readline().decode('utf-8', errors='ignore').strip()
                 if msg:
-                    serialized_hands = [hand_str.strip() for hand_str in msg[1:-1].split(",")]
+                    hands_fingers = json.loads(msg)
 
                     hands = []
 
-                    for serialized_hand in serialized_hands:
-                        hands.append(Hand.deserialize(serialized_hand))
+                    for hand_fingers in hands_fingers:
+                        hand_fingers.append(None)
+                        hands.append(Hand(*hand_fingers))
 
                     hand_events = []
 
