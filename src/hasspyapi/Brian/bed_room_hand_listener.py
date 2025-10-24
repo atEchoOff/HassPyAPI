@@ -51,6 +51,9 @@ class HandListener:
                         if all(hand.fingers):
                             hand_events.append("ALL_FINGERS")
 
+                        if not any(hand.fingers):
+                            hand_events.append("0")
+
                         if hand.only(FingerTips.INDEX):
                             hand_events.append("1")
 

@@ -50,12 +50,11 @@ class BedRoom:
             return True
         
     @script
-    def show_hands(self):
+    def hand_signal_toggle_fan(self):
         '''
-        Just print something when hands are detected in the bedroom
+        Toggle the fan when all fingers are detected
         '''
-        def hand_message(event):
-            print(event)
+        def all_fingers(event):
             if not event:
                 # This is not event driven
                 return None
@@ -63,12 +62,18 @@ class BedRoom:
             if event.get("entity_id") != "hand.bedroom":
                 # This event belongs a different device
                 return None
+            
+            if event.get("msg") != "ALL_FINGERS":
+                # This is the wrong hand signal
+                return None
+            
             return True
         
-        # Turn off lights after 15 seconds
-        @self.listener.trigger_when(hand_message)
-        def power_off_lights(event):
-            logger.info("Found a hand: " + event.get("msg"))
+        # Toggle the fan
+        @self.listener.trigger_when(all_fingers)
+        def toggle_fan(event):
+            self.fan.toggle()
+            logger.info("Toggling the fan due to hand signal")
 
     @script
     def save_power(self):
