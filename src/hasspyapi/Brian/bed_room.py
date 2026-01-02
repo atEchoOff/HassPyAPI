@@ -25,9 +25,10 @@ class BedRoom:
         Turn on other lights when main ceiling light turns on
         '''
         def main_ceiling_light_turned_on(event):
+            print("Hi")
             if not event:
                 return None
-            
+            print("Hi")
             return True
 
         @self.listener.trigger_when(main_ceiling_light_turned_on)
