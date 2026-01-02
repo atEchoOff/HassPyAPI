@@ -10,10 +10,10 @@ class BedRoom:
 
         bedroom = home.please().filter(area = "Bedroom")
 
-        self.ceiling_lights = bedroom.filter(name = "*Ceiling*").get()
+        self.ceiling_lights = bedroom.filter(name = "*Ceiling*")
         self.main_ceiling_light = bedroom.filter(name = "Ceiling light 1").get()
 
-        self.other_lights = bedroom.filter(type = "light", name = "!Ceiling").get()
+        self.other_lights = bedroom.filter(type = "light", name = "!Ceiling")
 
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
 
