@@ -49,7 +49,7 @@ class HassCommand:
                         break
 
                 elif kwargs[kwarg].startswith("!"):
-                    if device[kwarg] == kwargs[kwarg][1:]:
+                    if device[kwarg].startswith(kwargs[kwarg][1:]):
                         # device[kwarg] matches kwargs[kwarg], which we do not want
                         break
                     
