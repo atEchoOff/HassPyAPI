@@ -23,12 +23,8 @@ if __name__ == "__main__":
     listener = home.listener()
     listener.start()
 
-    from .Brian.main_room import MainRoom
     from .Brian.bed_room import BedRoom
-    from .Brian.outside import Outside
-    MainRoom(home, listener)
     BedRoom(home, listener)
-    Outside(home, listener)
 
     import traceback
     print("Console has started")

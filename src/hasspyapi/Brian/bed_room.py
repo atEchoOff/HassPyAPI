@@ -1,6 +1,5 @@
 import logging
 import datetime
-from .bed_room_hand_listener import HandListener
 
 from ..hass_scripts import start_scripts, script
 logger = logging.getLogger(__name__)
@@ -11,280 +10,276 @@ class BedRoom:
 
         bedroom = home.please().filter(area = "Bedroom")
 
-        self.sensor_motion = bedroom.filter(name = "*Sensor Motion*").get()
+        self.ceiling_lights = bedroom.filter(name = "*Ceiling*").get()
+        self.main_ceiling_light = bedroom.filter(name = "Ceiling light 1").get()
 
-        self.power_button = bedroom.filter(name = "*Button 1*").get()
-        self.fan_button = bedroom.filter(name = "*Button 4*").get()
-
-        self.closet_power_button = home.please().filter(area = "Closet", name = "*Button 1*").get()
-        self.closet_light = home.please().filter(area = "Closet", type = "light").get()
-    
-        self.lights = bedroom.filter(type = "light")
-
-        self.non_fan_lights = self.lights.filter(name = "!Ceiling Light")
-        self.fan_light = self.lights.filter(name = "Ceiling Light")
-
-        self.fan = bedroom.filter(type = "fan").get()
-
-        self.temperature = bedroom.filter(name = "*Sensor Temperature*").get()
-        
-        self.google_assistant = home.please().google_assistant
-
-        # Save whether or not to supress motion. When asleep, do not turn on lights from motion!
-        self.supress_motion = False
+        self.other_lights = bedroom.filter(type = "light", name = "!Ceiling").get()
 
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
 
-        HandListener(listener, 1)
-
         start_scripts(self)
 
-    def lights_are_bright(self):
-        '''
-        Return whether or not the lights are in their fully bright state
-        Note, sum > 1 is used since one light does not store kelvins or brightness
-        '''
-        attributes = self.lights.get_attributes()
-        kelvins_mismatch = [attribute.get("color_temp_kelvin") != self.default_light_settings["color_temp_kelvin"] for attribute in attributes]
-        brightnesses_mismatch = [attribute.get("brightness") != self.default_light_settings["brightness"] for attribute in attributes]
-        if sum(kelvins_mismatch) > 1 or sum(brightnesses_mismatch) > 1:
-            return False
-        else:
-            return True
-        
     @script
-    def hand_signal_toggle_fan(self):
+    def turn_on_other_lights(self):
         '''
-        Toggle the fan when all fingers are detected
+        Turn on other lights when main ceiling light turns on
         '''
-        def all_fingers(event):
+        def main_ceiling_light_turned_on(event):
             if not event:
-                # This is not event driven
-                return None
-            
-            if event.get("entity_id") != "hand.bedroom":
-                # This event belongs a different device
-                return None
-            
-            if event.get("msg") != "ALL_FINGERS":
-                # This is the wrong hand signal
                 return None
             
             return True
+
+        @self.listener.trigger_when(main_ceiling_light_turned_on)
+        def doit(event):
+            print(event)
+
+    # def lights_are_bright(self):
+    #     '''
+    #     Return whether or not the lights are in their fully bright state
+    #     Note, sum > 1 is used since one light does not store kelvins or brightness
+    #     '''
+    #     attributes = self.lights.get_attributes()
+    #     kelvins_mismatch = [attribute.get("color_temp_kelvin") != self.default_light_settings["color_temp_kelvin"] for attribute in attributes]
+    #     brightnesses_mismatch = [attribute.get("brightness") != self.default_light_settings["brightness"] for attribute in attributes]
+    #     if sum(kelvins_mismatch) > 1 or sum(brightnesses_mismatch) > 1:
+    #         return False
+    #     else:
+    #         return True
         
-        # Toggle the fan
-        @self.listener.trigger_when(all_fingers)
-        def toggle_fan(event):
-            self.fan.toggle()
-            logger.info("Toggling the fan due to hand signal")
-
-    @script
-    def hand_signal_light_brightness(self):
-        '''
-        Change the light brightness from hand signals
-        '''
-        def some_fingers(event):
-            if not event:
-                # This is not event driven
-                return None
+    # @script
+    # def hand_signal_toggle_fan(self):
+    #     '''
+    #     Toggle the fan when all fingers are detected
+    #     '''
+    #     def all_fingers(event):
+    #         if not event:
+    #             # This is not event driven
+    #             return None
             
-            if event.get("entity_id") != "hand.bedroom":
-                # This event belongs a different device
-                return None
+    #         if event.get("entity_id") != "hand.bedroom":
+    #             # This event belongs a different device
+    #             return None
             
-            if event.get("msg") not in {"0", "1", "2", "3", "4"}:
-                # This is the wrong hand signal
-                return None
+    #         if event.get("msg") != "ALL_FINGERS":
+    #             # This is the wrong hand signal
+    #             return None
             
-            return True
+    #         return True
         
-        # Toggle the fan
-        @self.listener.trigger_when(some_fingers)
-        def change_bedroom_brightness(event):
-            brightness_level = int(event.get("msg")) * 64
+    #     # Toggle the fan
+    #     @self.listener.trigger_when(all_fingers)
+    #     def toggle_fan(event):
+    #         self.fan.toggle()
+    #         logger.info("Toggling the fan due to hand signal")
 
-            if brightness_level == 256:
-                self.fan_light.turn_on()
-            else:
-                self.fan_light.turn_off()
-
-            self.non_fan_lights.turn_on(brightness = brightness_level)
-
-            logger.info("Setting the brightness level to " + str(brightness_level) + " due to hand signal")
-
-    @script
-    def save_power(self):
-        '''
-        Turn off all lights when there is no motion for 15 minutes
-        '''
-        def no_motion(event):
-            if event:
-                # This case in not event driven
-                return None
+    # @script
+    # def hand_signal_light_brightness(self):
+    #     '''
+    #     Change the light brightness from hand signals
+    #     '''
+    #     def some_fingers(event):
+    #         if not event:
+    #             # This is not event driven
+    #             return None
             
-            if self.supress_motion:
-                return False
+    #         if event.get("entity_id") != "hand.bedroom":
+    #             # This event belongs a different device
+    #             return None
             
-            return self.sensor_motion.get_state() == 'off'
+    #         if event.get("msg") not in {"0", "1", "2", "3", "4"}:
+    #             # This is the wrong hand signal
+    #             return None
+            
+    #         return True
         
-        # Turn off lights after 15 seconds
-        @self.listener.trigger_when(no_motion, duration = 15 * 60)
-        def power_off_lights(event):
-            logger.info("Saving bedroom power")
-            self.lights.turn_off()
+    #     # Toggle the fan
+    #     @self.listener.trigger_when(some_fingers)
+    #     def change_bedroom_brightness(event):
+    #         brightness_level = int(event.get("msg")) * 64
 
-    @script
-    def motion_sensor(self):
-        '''
-        Make lights nice and bright once motion starts!
-        Only set lights to bright if all lights are off
-        '''
-        def motion_started(event):
-            if not self.sensor_motion.matches(event):
-                # This event belongs a different device
-                return None
+    #         if brightness_level == 256:
+    #             self.fan_light.turn_on()
+    #         else:
+    #             self.fan_light.turn_off()
+
+    #         self.non_fan_lights.turn_on(brightness = brightness_level)
+
+    #         logger.info("Setting the brightness level to " + str(brightness_level) + " due to hand signal")
+
+    # @script
+    # def save_power(self):
+    #     '''
+    #     Turn off all lights when there is no motion for 15 minutes
+    #     '''
+    #     def no_motion(event):
+    #         if event:
+    #             # This case in not event driven
+    #             return None
             
-            if self.supress_motion:
-                return False
+    #         if self.supress_motion:
+    #             return False
             
-            return event.get("new_state").get("state") == "on" \
-               and event.get("old_state").get("state") == "off" \
-               and all([state in {"off", "unavailable"} for state in self.lights.get_state()])
+    #         return self.sensor_motion.get_state() == 'off'
         
-        # Turn on lights when motion is started
-        @self.listener.trigger_when(motion_started)
-        def power_on_lights(event):
-            logger.info("Powering on lights due to motion")
-            self.lights.turn_on(**self.default_light_settings)
+    #     # Turn off lights after 15 seconds
+    #     @self.listener.trigger_when(no_motion, duration = 15 * 60)
+    #     def power_off_lights(event):
+    #         logger.info("Saving bedroom power")
+    #         self.lights.turn_off()
 
-    @script
-    def light_switch(self):
-        '''
-        Let the top button of the light switch toggle the lights
-        If the lights are in any intermediate state or off, switch turns them on
-        If the lights are on, turn them off
-        '''
-
-        def power_button_pressed(event):
-            if not self.power_button.matches(event):
-                return None
+    # @script
+    # def motion_sensor(self):
+    #     '''
+    #     Make lights nice and bright once motion starts!
+    #     Only set lights to bright if all lights are off
+    #     '''
+    #     def motion_started(event):
+    #         if not self.sensor_motion.matches(event):
+    #             # This event belongs a different device
+    #             return None
             
-            return event.get("new_state").get("event_type") == "initial_press"
+    #         if self.supress_motion:
+    #             return False
+            
+    #         return event.get("new_state").get("state") == "on" \
+    #            and event.get("old_state").get("state") == "off" \
+    #            and all([state in {"off", "unavailable"} for state in self.lights.get_state()])
         
-        @self.listener.trigger_when(power_button_pressed)
-        def toggle_lights(event):
-            if self.lights_are_bright():
-                # Turn off
-                logger.info("Turning off lights from light switch")
-                self.lights.turn_off()
-                self.supress_motion = True
-            else:
-                # Turn on
-                logger.info("Turning on lights from light switch")
-                self.lights.turn_on(**self.default_light_settings)
-                self.supress_motion = False
+    #     # Turn on lights when motion is started
+    #     @self.listener.trigger_when(motion_started)
+    #     def power_on_lights(event):
+    #         logger.info("Powering on lights due to motion")
+    #         self.lights.turn_on(**self.default_light_settings)
 
-    @script
-    def fan_switch(self):
-        '''
-        Toggle the fan when the fourth button is pressed
-        '''
-        def fan_button_pressed(event):
-            if not self.fan_button.matches(event):
-                # Event must belong to main_room_fan_button
-                return None
+    # @script
+    # def light_switch(self):
+    #     '''
+    #     Let the top button of the light switch toggle the lights
+    #     If the lights are in any intermediate state or off, switch turns them on
+    #     If the lights are on, turn them off
+    #     '''
+
+    #     def power_button_pressed(event):
+    #         if not self.power_button.matches(event):
+    #             return None
             
-            return event.get("new_state").get("event_type") == "initial_press"
+    #         return event.get("new_state").get("event_type") == "initial_press"
         
-        @self.listener.trigger_when(fan_button_pressed)
-        def toggle_fan(event):
-            logger.info("Toggling fan from light switch")
-            self.fan.toggle()
+    #     @self.listener.trigger_when(power_button_pressed)
+    #     def toggle_lights(event):
+    #         if self.lights_are_bright():
+    #             # Turn off
+    #             logger.info("Turning off lights from light switch")
+    #             self.lights.turn_off()
+    #             self.supress_motion = True
+    #         else:
+    #             # Turn on
+    #             logger.info("Turning on lights from light switch")
+    #             self.lights.turn_on(**self.default_light_settings)
+    #             self.supress_motion = False
 
-    @script
-    def night_temperature(self):
-        '''
-        Ensure the bedroom temperature stays between 72 and 74
-        '''
-        def temperature_below_72(event):
-            if event:
-                return None
+    # @script
+    # def fan_switch(self):
+    #     '''
+    #     Toggle the fan when the fourth button is pressed
+    #     '''
+    #     def fan_button_pressed(event):
+    #         if not self.fan_button.matches(event):
+    #             # Event must belong to main_room_fan_button
+    #             return None
             
-            start_time = datetime.time(20, 30) # 8:30 pm
-            end_time = datetime.time(8, 30) # 8:30 am
-            curtime = datetime.datetime.now().time()
-
-            night_time = start_time < curtime or curtime < end_time
-            
-            if not night_time:
-                # We are not asleep
-                return False
-            
-            print(f"Current bedroom temperature: {self.temperature.get_state()}")
-            return float(self.temperature.get_state()) < 72
-
-        @self.listener.trigger_when(temperature_below_72, duration = 60)
-        def raise_temperature(event):
-            logger.info("Raising the temperature in the bedroom to 80")
-            self.google_assistant("Set the thermostat to 80 degrees")
-
-        def temperature_above_74(event):
-            if event:
-                return None
-            
-            start_time = datetime.time(20, 30) # 8:30 pm
-            end_time = datetime.time(8, 30) # 8:30 am
-            curtime = datetime.datetime.now().time()
-
-            night_time = start_time < curtime or curtime < end_time
-            
-            if not night_time:
-                # We are not asleep
-                return False
-            
-            return float(self.temperature.get_state()) > 74
+    #         return event.get("new_state").get("event_type") == "initial_press"
         
-        @self.listener.trigger_when(temperature_above_74, duration = 60)
-        def lower_temperature(event):
-            logger.info("Lowering the temperature in the bedroom to 65")
-            self.google_assistant("Set the thermostat to 65 degrees")
+    #     @self.listener.trigger_when(fan_button_pressed)
+    #     def toggle_fan(event):
+    #         logger.info("Toggling fan from light switch")
+    #         self.fan.toggle()
 
-    @script
-    def day_temperature(self):
-        '''
-        Reset the temperature back to 76 during the day, at 8:45 am
-        '''
-
-        def it_is_after_845_before_9(event):
-            if event:
-                return None
+    # @script
+    # def night_temperature(self):
+    #     '''
+    #     Ensure the bedroom temperature stays between 72 and 74
+    #     '''
+    #     def temperature_below_72(event):
+    #         if event:
+    #             return None
             
-            start_time = datetime.time(8, 45) # 8:45 am
-            end_time = datetime.time(9, 0) # 9:00 am
-            curtime = datetime.datetime.now().time()
+    #         start_time = datetime.time(20, 30) # 8:30 pm
+    #         end_time = datetime.time(8, 30) # 8:30 am
+    #         curtime = datetime.datetime.now().time()
 
-            return start_time < curtime < end_time
-        
-        @self.listener.trigger_when(it_is_after_845_before_9, duration = 30)
-        def reset_temperature(event):
-            logger.info("Resetting the temperature to 76")
-            self.google_assistant("Set the thermostat to 76 degrees")
-
-    @script
-    def closet_light_switch(self):
-        '''
-        Let the top button of the light switch toggle the lights of the closet
-        If the lights are in any intermediate state or off, switch turns them on
-        If the lights are on, turn them off
-        '''
-
-        def power_button_pressed(event):
-            if not self.closet_power_button.matches(event):
-                return None
+    #         night_time = start_time < curtime or curtime < end_time
             
-            return event.get("new_state").get("event_type") == "initial_press"
+    #         if not night_time:
+    #             # We are not asleep
+    #             return False
+            
+    #         print(f"Current bedroom temperature: {self.temperature.get_state()}")
+    #         return float(self.temperature.get_state()) < 72
+
+    #     @self.listener.trigger_when(temperature_below_72, duration = 60)
+    #     def raise_temperature(event):
+    #         logger.info("Raising the temperature in the bedroom to 80")
+    #         self.google_assistant("Set the thermostat to 80 degrees")
+
+    #     def temperature_above_74(event):
+    #         if event:
+    #             return None
+            
+    #         start_time = datetime.time(20, 30) # 8:30 pm
+    #         end_time = datetime.time(8, 30) # 8:30 am
+    #         curtime = datetime.datetime.now().time()
+
+    #         night_time = start_time < curtime or curtime < end_time
+            
+    #         if not night_time:
+    #             # We are not asleep
+    #             return False
+            
+    #         return float(self.temperature.get_state()) > 74
         
-        @self.listener.trigger_when(power_button_pressed)
-        def toggle_lights(event):
-            logger.info("Toggling closet light from light switch")
-            self.closet_light.toggle()
+    #     @self.listener.trigger_when(temperature_above_74, duration = 60)
+    #     def lower_temperature(event):
+    #         logger.info("Lowering the temperature in the bedroom to 65")
+    #         self.google_assistant("Set the thermostat to 65 degrees")
+
+    # @script
+    # def day_temperature(self):
+    #     '''
+    #     Reset the temperature back to 76 during the day, at 8:45 am
+    #     '''
+
+    #     def it_is_after_845_before_9(event):
+    #         if event:
+    #             return None
+            
+    #         start_time = datetime.time(8, 45) # 8:45 am
+    #         end_time = datetime.time(9, 0) # 9:00 am
+    #         curtime = datetime.datetime.now().time()
+
+    #         return start_time < curtime < end_time
+        
+    #     @self.listener.trigger_when(it_is_after_845_before_9, duration = 30)
+    #     def reset_temperature(event):
+    #         logger.info("Resetting the temperature to 76")
+    #         self.google_assistant("Set the thermostat to 76 degrees")
+
+    # @script
+    # def closet_light_switch(self):
+    #     '''
+    #     Let the top button of the light switch toggle the lights of the closet
+    #     If the lights are in any intermediate state or off, switch turns them on
+    #     If the lights are on, turn them off
+    #     '''
+
+    #     def power_button_pressed(event):
+    #         if not self.closet_power_button.matches(event):
+    #             return None
+            
+    #         return event.get("new_state").get("event_type") == "initial_press"
+        
+    #     @self.listener.trigger_when(power_button_pressed)
+    #     def toggle_lights(event):
+    #         logger.info("Toggling closet light from light switch")
+    #         self.closet_light.toggle()
