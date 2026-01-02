@@ -9,6 +9,7 @@ class BedRoom:
         self.listener = listener
 
         bedroom = home.please().filter(area = "Bedroom")
+        print(bedroom.devices)
 
         self.ceiling_lights = bedroom.filter(name = "*Ceiling*")
         self.main_ceiling_light = bedroom.filter(name = "Ceiling light 1").get()
