@@ -1,5 +1,5 @@
 import logging
-import datetime
+from pinger import is_bulb_online
 
 from ..hass_scripts import start_scripts, script
 logger = logging.getLogger(__name__)
@@ -26,13 +26,14 @@ class BedRoom:
         Turn on other lights when main ceiling light turns on
         '''
         def main_ceiling_light_turned_on(event):
-            print("Hi")
-            if not event:
+            if event:
                 return None
-            print("Hi")
-            return True
+            
+            # This is a timed event. 
+            # Check if IP is connected to network
+            return is_bulb_online("192.168.1.200")
 
-        @self.listener.trigger_when(main_ceiling_light_turned_on)
+        @self.listener.trigger_when(main_ceiling_light_turned_on, duration=5)
         def doit(event):
             print(event)
 
