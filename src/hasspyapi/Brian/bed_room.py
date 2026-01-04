@@ -9,10 +9,11 @@ class BedRoom:
         self.listener = listener
 
         bedroom = home.please().filter(area = "Bedroom")
-        print(bedroom.devices)
 
-        self.ceiling_lights = bedroom.filter(name = "*Ceiling*")
-        self.main_ceiling_light = bedroom.filter(name = "Ceiling light 1").get()
+        # self.ceiling_lights = bedroom.filter(name = "*Ceiling*")
+        # self.main_ceiling_light = bedroom.filter(name = "Ceiling light 1").get()
+
+        self.main_ceiling_light_ip = "192.168.1.200"
 
         self.other_lights = bedroom.filter(type = "light", name = "!Ceiling")
 
@@ -31,11 +32,28 @@ class BedRoom:
             
             # This is a timed event. 
             # Check if IP is connected to network
-            return is_bulb_online("192.168.1.200")
+            return is_bulb_online(self.main_ceiling_light_ip)
 
-        @self.listener.trigger_when(main_ceiling_light_turned_on, duration=5)
+        @self.listener.trigger_when(main_ceiling_light_turned_on, duration=2)
         def doit(event):
-            print(event)
+            self.other_lights.turn_on(**self.default_light_settings)
+
+    @script
+    def turn_off_other_lights(self):
+        '''
+        Turn off other lights when main ceiling light turns on
+        '''
+        def main_ceiling_light_turned_off(event):
+            if event:
+                return None
+            
+            # This is a timed event. 
+            # Check if IP is connected to network
+            return not is_bulb_online(self.main_ceiling_light_ip)
+
+        @self.listener.trigger_when(main_ceiling_light_turned_off, duration=2)
+        def doit(event):
+            self.other_lights.turn_off()
 
     # def lights_are_bright(self):
     #     '''
