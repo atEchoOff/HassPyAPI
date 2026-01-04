@@ -1,5 +1,5 @@
 import logging
-from pinger import is_bulb_online
+from .pinger import is_bulb_online
 
 from ..hass_scripts import start_scripts, script
 logger = logging.getLogger(__name__)

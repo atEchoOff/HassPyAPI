@@ -114,8 +114,6 @@ class HassEventListener:
             while True:
                 msg = await ws.recv()
 
-                print(msg)
-
                 if msg.get("type") == "event" and msg.get("event").get("event_type") == "state_changed":
                     msg = msg.get("event").get("data")
 
