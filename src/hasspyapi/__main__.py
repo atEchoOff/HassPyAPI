@@ -21,7 +21,7 @@ if __name__ == "__main__":
     print("Home initialized")
 
     listener = home.listener()
-    listener.start()
+    listener.start(interval=1)
 
     from .Brian.bed_room import BedRoom
     BedRoom(home, listener)
