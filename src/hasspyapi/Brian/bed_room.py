@@ -17,6 +17,8 @@ class BedRoom:
 
         self.other_lights = bedroom.filter(type = "light", name = "!Ceiling")
 
+        print(self.other_lights.devices)
+
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
 
         start_scripts(self)
