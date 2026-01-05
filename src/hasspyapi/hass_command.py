@@ -29,8 +29,8 @@ class HassCommand:
         devices = []
         for device in self.devices:
             for kwarg in kwargs:
-                print(device)
-                print(device[kwarg])
+                # print(device)
+                # print(device[kwarg])
                 if not device[kwarg]:
                     # Device doesnt have the kwarg, so it cannot match
                     print("Not there")
