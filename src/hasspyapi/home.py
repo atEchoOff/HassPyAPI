@@ -105,7 +105,8 @@ class Home:
             # Selection is listed in order of preference
             # 1. The user changed the name manually in hass (saved in "name")
             # 2. There is an existing friendly name (saved in "original_name")
-
+            if entity_id == "light.fireplace":
+                print(ent)
             display_name = ent.get("name") or ent.get("original_name")
 
             if display_name and "DEPRECATED" in display_name:
