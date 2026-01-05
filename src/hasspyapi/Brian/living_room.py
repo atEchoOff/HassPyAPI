@@ -13,7 +13,6 @@ class LivingRoom:
         self.lights = home.please().filter(area="Living Room", type="light", name="!Ceiling")
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
 
-        print(self.lights.devices)
         start_scripts(self)
 
     @script
