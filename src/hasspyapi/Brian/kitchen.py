@@ -12,6 +12,8 @@ class Kitchen:
 
         self.google_assistant = home.please().google_assistant
 
+        print(home.please().filter(area="Kitchen", type="light").devices)
+
         start_scripts(self)
 
     def turn_on_bright(self):
