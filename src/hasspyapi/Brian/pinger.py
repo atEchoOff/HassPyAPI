@@ -7,6 +7,8 @@ def is_bulb_online(ip_address):
     """
     command = ['ping', '-c', '1', '-W', '1', ip_address]
     
+    if ip_address == "192.168.1.200":
+        print("Starting ping")
     # Run the ping command, suppressing output
     response = subprocess.run(
         command,
@@ -14,5 +16,6 @@ def is_bulb_online(ip_address):
         stderr=subprocess.DEVNULL
     )
     
-    print("Ping complete: " + str(response.returncode == 0))
+    if ip_address == "192.168.1.200":
+        print("Ping finished: " + str(response.returncode == 0))
     return response.returncode == 0
