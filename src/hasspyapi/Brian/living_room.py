@@ -47,4 +47,4 @@ class LivingRoom:
 
         @self.listener.trigger_when(main_ceiling_light_turned_off, duration=2)
         def doit(event):
-            self.lights.turn_off()
+            self.lights.turn_on(brightness=0)
