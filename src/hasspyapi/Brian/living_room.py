@@ -11,7 +11,7 @@ class LivingRoom:
         self.main_ceiling_light_ip = "192.168.1.203"
 
         self.lights = home.please().filter(area="Living Room", type="light", name="!Ceiling")
-        self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
+        self.default_light_settings = {"color_temp_kelvin": 3000, "brightness": 255}
 
         start_scripts(self)
 

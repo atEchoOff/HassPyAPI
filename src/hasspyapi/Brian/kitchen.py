@@ -11,7 +11,7 @@ class Kitchen:
         self.main_ceiling_light_ip = "192.168.1.206"
 
         self.lights = home.please().filter(area="Kitchen", type="light", name="!Ceiling")
-        self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
+        self.default_light_settings = {"color_temp_kelvin": 3000, "brightness": 255}
 
         print(self.lights.devices)
 
