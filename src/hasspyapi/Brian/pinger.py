@@ -14,4 +14,5 @@ def is_bulb_online(ip_address):
         stderr=subprocess.DEVNULL
     )
     
+    print("Ping complete: " + str(response.returncode == 0))
     return response.returncode == 0
