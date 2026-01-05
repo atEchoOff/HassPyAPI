@@ -15,6 +15,7 @@ class HassCommand:
         self.api_layer = HassApiLayer(url, api_key)
 
     def filter(self, **kwargs):
+        print("What")
         '''
         Create a HassCommand object whose devices only match attributes specified in **kwargs
 
