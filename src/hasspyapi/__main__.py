@@ -24,7 +24,7 @@ if __name__ == "__main__":
     listener.start(interval=1)
 
     from .Brian.bed_room import BedRoom
-    BedRoom(home, listener)
+    bedroom = BedRoom(home, listener)
 
     import traceback
     print("Console has started")
