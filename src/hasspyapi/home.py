@@ -105,6 +105,7 @@ class Home:
             # Selection is listed in order of preference
             # 1. The user changed the name manually in hass (saved in "name")
             # 2. There is an existing friendly name (saved in "original_name")
+            
             display_name = ent.get("name") or ent.get("original_name") or device.get("name_by_user") or device.get("name")
 
             if display_name and "DEPRECATED" in display_name:
