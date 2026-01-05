@@ -50,6 +50,8 @@ class HassCommand:
 
                 elif kwargs[kwarg].startswith("!"):
                     if device[kwarg].startswith(kwargs[kwarg][1:]):
+                        print("Filtering out ")
+                        print(device[kwarg])
                         # device[kwarg] matches kwargs[kwarg], which we do not want
                         break
                     
