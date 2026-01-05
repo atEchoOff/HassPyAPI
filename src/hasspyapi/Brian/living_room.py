@@ -42,7 +42,9 @@ class LivingRoom:
 
         @self.listener.trigger_when(main_ceiling_light_turned_on, duration=2)
         def doit(event):
+            print("Trying to turn on lights to bright")
             self.turn_on_bright()
+            print("Done")
 
     @script
     def turn_off_other_lights(self):
@@ -59,4 +61,6 @@ class LivingRoom:
 
         @self.listener.trigger_when(main_ceiling_light_turned_off, duration=2)
         def doit(event):
+            print("Trying to turn off lights")
             self.turn_off()
+            print("Done")
