@@ -29,11 +29,8 @@ class HassCommand:
         devices = []
         for device in self.devices:
             for kwarg in kwargs:
-                # print(device)
-                # print(device[kwarg])
                 if not device[kwarg]:
                     # Device doesnt have the kwarg, so it cannot match
-                    # print("Not there")
                     break
 
                 if kwargs[kwarg].startswith("*") and kwargs[kwarg].endswith("*"):
@@ -53,8 +50,6 @@ class HassCommand:
 
                 elif kwargs[kwarg].startswith("!"):
                     if device[kwarg].startswith(kwargs[kwarg][1:]):
-                        print("Filtering out ")
-                        print(device[kwarg])
                         # device[kwarg] matches kwargs[kwarg], which we do not want
                         break
                     
