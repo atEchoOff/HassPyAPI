@@ -21,6 +21,8 @@ class BedRoom:
 
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
 
+        self.google_assistant = home.please().google_assistant
+
         start_scripts(self)
 
     @script
