@@ -13,8 +13,6 @@ class Kitchen:
         self.lights = home.please().filter(area="Kitchen", type="light", name="!Ceiling")
         self.default_light_settings = {"color_temp_kelvin": 3000, "brightness": 255}
 
-        print(self.lights.devices)
-
         start_scripts(self)
 
     @script
@@ -33,6 +31,7 @@ class Kitchen:
         @self.listener.trigger_when(main_ceiling_light_turned_on, duration=2)
         def doit(event):
             self.lights.turn_on(**self.default_light_settings)
+            logger.info("Detected ceiling light, turning on kitchen")
 
     @script
     def turn_off_other_lights(self):
@@ -50,3 +49,4 @@ class Kitchen:
         @self.listener.trigger_when(main_ceiling_light_turned_off, duration=2)
         def doit(event):
             self.lights.turn_off()
+            logger.info("Lost connection from ceiling light, turning off kitchen")

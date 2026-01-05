@@ -31,6 +31,7 @@ class LivingRoom:
         @self.listener.trigger_when(main_ceiling_light_turned_on, duration=2)
         def doit(event):
             self.lights.turn_on(**self.default_light_settings)
+            logger.info("Detected ceiling light, turning on living room")
 
     @script
     def turn_off_other_lights(self):
@@ -48,3 +49,4 @@ class LivingRoom:
         @self.listener.trigger_when(main_ceiling_light_turned_off, duration=2)
         def doit(event):
             self.lights.turn_off()
+            logger.info("Lost connection from ceiling light, turning off living room")
