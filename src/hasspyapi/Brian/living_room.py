@@ -10,7 +10,7 @@ class LivingRoom:
 
         self.main_ceiling_light_ip = "192.168.1.203"
 
-        self.lights = home.please().filter(area="Living Room", type="light")
+        self.lights = home.please().filter(area="Living Room", type="light", name="!Living Room Ceiling")
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
         self.off_default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
         print(self.lights.devices)
@@ -48,4 +48,4 @@ class LivingRoom:
 
         @self.listener.trigger_when(main_ceiling_light_turned_off, duration=2)
         def doit(event):
-            self.lights.turn_on(**self.off_default_light_settings)
+            self.lights.turn_off()
