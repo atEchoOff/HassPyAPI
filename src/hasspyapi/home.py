@@ -107,6 +107,7 @@ class Home:
             # 2. There is an existing friendly name (saved in "original_name")
             if entity_id == "light.fireplace":
                 print(ent)
+                print(device)
             display_name = ent.get("name") or ent.get("original_name")
 
             if display_name and "DEPRECATED" in display_name:
