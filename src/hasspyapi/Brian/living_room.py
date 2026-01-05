@@ -10,7 +10,7 @@ class LivingRoom:
 
         self.main_ceiling_light_ip = "192.168.1.203"
         print("Starting filter")
-        self.lights = home.please().filter(area="Living Room", type="light", name="!Living Room Ceiling")
+        self.lights = home.please().filter(area="Living Room", type="light")
         print("Filter done")
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
         self.off_default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
