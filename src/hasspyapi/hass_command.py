@@ -33,7 +33,7 @@ class HassCommand:
                 # print(device[kwarg])
                 if not device[kwarg]:
                     # Device doesnt have the kwarg, so it cannot match
-                    print("Not there")
+                    # print("Not there")
                     break
 
                 if kwargs[kwarg].startswith("*") and kwargs[kwarg].endswith("*"):
