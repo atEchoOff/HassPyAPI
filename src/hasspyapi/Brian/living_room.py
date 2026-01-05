@@ -10,22 +10,10 @@ class LivingRoom:
 
         self.main_ceiling_light_ip = "192.168.1.203"
 
-        self.google_assistant = home.please().google_assistant
+        self.lights = home.please().filter(area="Living Room", type="light")
+        self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
 
         start_scripts(self)
-
-    def turn_on_bright(self):
-        '''
-        Set color and brightness of all lights to be bright
-        '''
-        self.google_assistant("Set living room brightness to 100%")
-        self.google_assistant("Set living room color to warm white")
-
-    def turn_off(self):
-        '''
-        Turn off all lights
-        '''
-        self.google_assistant("Turn off living room lights")
 
     @script
     def turn_on_other_lights(self):
@@ -42,7 +30,7 @@ class LivingRoom:
 
         @self.listener.trigger_when(main_ceiling_light_turned_on, duration=2)
         def doit(event):
-            self.turn_on_bright()
+            self.lights.turn_on(**self.default_light_settings)
 
     @script
     def turn_off_other_lights(self):
@@ -59,4 +47,4 @@ class LivingRoom:
 
         @self.listener.trigger_when(main_ceiling_light_turned_off, duration=2)
         def doit(event):
-            self.turn_off()
+            self.lights.turn_off()
