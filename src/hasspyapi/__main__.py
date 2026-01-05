@@ -29,6 +29,9 @@ if __name__ == "__main__":
     from .Brian.living_room import LivingRoom
     livingroom = LivingRoom(home, listener)
 
+    from .Brian.kitchen import Kitchen
+    kitchen = Kitchen(home, listener)
+
     import traceback
     print("Console has started")
     while True:
