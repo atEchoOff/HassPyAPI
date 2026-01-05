@@ -12,7 +12,7 @@ class LivingRoom:
 
         self.lights = home.please().filter(area="Living Room", type="light")
         self.default_light_settings = {"color_temp_kelvin": 2500, "brightness": 255}
-
+        print(self.lights.devices)
         start_scripts(self)
 
     @script
@@ -47,4 +47,4 @@ class LivingRoom:
 
         @self.listener.trigger_when(main_ceiling_light_turned_off, duration=2)
         def doit(event):
-            self.lights.turn_on(brightness=0)
+            self.lights.turn_off()
