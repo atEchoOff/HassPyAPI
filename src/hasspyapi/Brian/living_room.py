@@ -4,11 +4,11 @@ from .pinger import is_bulb_online
 from ..hass_scripts import start_scripts, script
 logger = logging.getLogger(__name__)
 
-class BedRoom:
+class LivingRoom:
     def __init__(self, home, listener):
         self.listener = listener
 
-        self.main_ceiling_light_ip = "192.168.1.200"
+        self.main_ceiling_light_ip = "192.168.1.203"
 
         self.google_assistant = home.please().google_assistant
 
@@ -18,14 +18,14 @@ class BedRoom:
         '''
         Set color and brightness of all lights to be bright
         '''
-        self.google_assistant("Set bedroom brightness to 100%")
-        self.google_assistant("Set bedroom color to candlelight")
+        self.google_assistant("Set living room brightness to 100%")
+        self.google_assistant("Set living room color to warm white")
 
     def turn_off(self):
         '''
         Turn off all lights
         '''
-        self.google_assistant("Turn off bedroom lights")
+        self.google_assistant("Turn off living room lights")
 
     @script
     def turn_on_other_lights(self):
