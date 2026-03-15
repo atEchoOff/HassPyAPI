@@ -23,6 +23,8 @@ class Kitchen:
         self.switch3 = home.please().filter(name="Main Room Button 3").get()
         self.switch4 = home.please().filter(name="Main Room Button 4").get()
 
+        self.string_lights = home.please().filter(name="String lights").get()
+
         start_scripts(self)
 
     def all_lights_off(self, lights):
@@ -36,6 +38,21 @@ class Kitchen:
             return False
         else:
             return True
+        
+    @script
+    def toggle_string_lights(self):
+        '''
+        Toggle the string lights when button 4 is pressed
+        '''
+        def button_4_pressed(event):
+            if not self.switch4.matches(event):
+                return None
+            
+            return event.get("new_state").get("event_type") == "initial_press"
+        
+        @self.listener.trigger_when(button_4_pressed)
+        def toggle_string_lights(self):
+            self.string_lights.toggle()
 
     @script
     def switch_toggle_lights(self):
