@@ -31,7 +31,9 @@ class Kitchen:
         Note, sum > 1 is used since one light does not store kelvins or brightness
         '''
         attributes = lights.get_attributes()
-        print(attributes)
+        for attribute in attributes:
+            if not attribute.get("brightness"):
+                print(attribute)
         brightnesses_mismatch = [attribute.get("brightness") > 0 for attribute in attributes]
         if sum(brightnesses_mismatch) >= 1:
             return False
