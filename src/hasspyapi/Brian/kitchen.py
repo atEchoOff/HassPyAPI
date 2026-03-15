@@ -30,7 +30,7 @@ class Kitchen:
         Return whether or not the lights are in their fully bright state
         Note, sum > 1 is used since one light does not store kelvins or brightness
         '''
-        attributes = lights.get_attributes()
+        attributes = lights.get_attributes(if_available=True)
         for attribute in attributes:
             if not attribute.get("brightness"):
                 print(attribute)
