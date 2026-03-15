@@ -101,6 +101,9 @@ class HassCommand:
         '''
         result = []
         for device in self.devices:
+            attribute = self.api_layer.states(device["entity_id"])["attributes"]
+            if not attribute.get("brightness"):
+                print(self.api_layer.states(device["entity_id"]))
             result.append(self.api_layer.states(device["entity_id"])["attributes"])
 
         return self._refine(result)
