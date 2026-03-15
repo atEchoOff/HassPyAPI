@@ -104,7 +104,7 @@ class HassCommand:
             states = self.get_state()
 
         for i, device in enumerate(self.devices):
-            if if_available and states[i].get("state") == 'unavailable':
+            if if_available and states[i] == 'unavailable':
                 continue
 
             result.append(self.api_layer.states(device["entity_id"])["attributes"])
@@ -133,7 +133,7 @@ class HassCommand:
             states = self.get_state()
 
         for i, device in enumerate(self.devices):
-            if if_available and states[i].get("state") == 'unavailable':
+            if if_available and states[i] == 'unavailable':
                 continue
             result.append(self.api_layer.turn_on(device["entity_id"], device["type"], **attributes))
 
@@ -169,7 +169,7 @@ class HassCommand:
             states = self.get_state()
 
         for i, device in enumerate(self.devices):
-            if if_available and states[i].get("state") == 'unavailable':
+            if if_available and states[i] == 'unavailable':
                 continue
             result.append(self.api_layer.turn_off(device["entity_id"], device["type"]))
 
@@ -192,7 +192,7 @@ class HassCommand:
             states = self.get_state()
 
         for i, device in enumerate(self.devices):
-            if if_available and states[i].get("state") == 'unavailable':
+            if if_available and states[i] == 'unavailable':
                 continue
             result.append(self.api_layer.toggle(device["entity_id"], device["type"], **attributes))
 
