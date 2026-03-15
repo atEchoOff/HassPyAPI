@@ -56,8 +56,11 @@ class Kitchen:
                 self.all_lights.turn_off(if_available=True)
             else:
                 # Turn on
-                self.all_living_room_lights.turn_on(if_available=True, **self.default_light_settings)
-                self.all_lights.turn_on(if_available=True, **self.default_light_settings)
+                if is_bulb_online(self.main_ceiling_light_ip):
+                    self.all_lights.turn_on(if_available=True, **self.default_light_settings)
+                
+                if is_bulb_online(self.living_room_ceiling_light_ip):
+                    self.all_living_room_lights.turn_on(if_available=True, **self.default_light_settings)
 
 
     @script
