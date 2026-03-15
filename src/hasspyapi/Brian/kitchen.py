@@ -31,9 +31,6 @@ class Kitchen:
         Note, sum > 1 is used since one light does not store kelvins or brightness
         '''
         attributes = lights.get_attributes(if_available=True)
-        for attribute in attributes:
-            if not attribute.get("brightness"):
-                print(attribute)
         brightnesses_mismatch = [attribute.get("brightness") is not None and attribute.get("brightness") > 0 for attribute in attributes]
         if sum(brightnesses_mismatch) >= 1:
             return False
@@ -53,22 +50,14 @@ class Kitchen:
         
         @self.listener.trigger_when(button_1_pressed)
         def toggle_all_lights(event):
-            living_room_lights = self.living_room_lights
-            lights = self.lights
-
-            if is_bulb_online(self.living_room_ceiling_light_ip):
-                living_room_lights = self.all_living_room_lights
-            if is_bulb_online(self.main_ceiling_light_ip):
-                lights = self.all_lights
-
-            if not self.all_lights_off(lights) or not self.all_lights_off(living_room_lights):
+            if not self.all_lights_off(self.all_lights) or not self.all_lights_off(self.all_living_room_lights):
                 # Turn off
-                living_room_lights.turn_off(if_available=True)
-                lights.turn_off(if_available=True)
+                self.all_living_room_lights.turn_off(if_available=True)
+                self.all_lights.turn_off(if_available=True)
             else:
                 # Turn on
-                living_room_lights.turn_on(if_available=True, **self.default_light_settings)
-                lights.turn_on(if_available=True, **self.default_light_settings)
+                self.all_living_room_lights.turn_on(if_available=True, **self.default_light_settings)
+                self.all_lights.turn_on(if_available=True, **self.default_light_settings)
 
 
     @script
