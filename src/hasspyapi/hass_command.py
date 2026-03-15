@@ -94,13 +94,19 @@ class HassCommand:
         else:
             return lst
     
-    def get_attributes(self):
+    def get_attributes(self, if_available=False):
         '''
         Get a list of attributes for each device
         If there is just one device, return the first element of such a list
         '''
         result = []
-        for device in self.devices:
+        if if_available:
+            states = self.get_state()
+
+        for i, device in enumerate(self.devices):
+            if if_available and states[i].get("state") == 'unavailable':
+                continue
+
             result.append(self.api_layer.states(device["entity_id"])["attributes"])
 
         return self._refine(result)
@@ -116,14 +122,19 @@ class HassCommand:
         
         return self._refine(result)
     
-    def turn_on(self, **attributes):
+    def turn_on(self, if_available=False, **attributes):
         '''
         Set attributes for all devices via given attributes, and turn devices on
         Return list of responses
         If there is just one device, return the first element of such a list
         '''
         result = []
-        for device in self.devices:
+        if if_available:
+            states = self.get_state()
+
+        for i, device in enumerate(self.devices):
+            if if_available and states[i].get("state") == 'unavailable':
+                continue
             result.append(self.api_layer.turn_on(device["entity_id"], device["type"], **attributes))
 
         return self._refine(result)
@@ -147,14 +158,19 @@ class HassCommand:
 
         return self._refine(result)
     
-    def turn_off(self):
+    def turn_off(self, if_available=False):
         '''
         Turn off all devices
         Return list of responses
         If there is just one device, return the first element of such a list
         '''
         result = []
-        for device in self.devices:
+        if if_available:
+            states = self.get_state()
+
+        for i, device in enumerate(self.devices):
+            if if_available and states[i].get("state") == 'unavailable':
+                continue
             result.append(self.api_layer.turn_off(device["entity_id"], device["type"]))
 
         return self._refine(result)
@@ -165,14 +181,19 @@ class HassCommand:
         '''
         return self.api_layer.google_assistant(command)
     
-    def toggle(self, **attributes):
+    def toggle(self, if_available=False, **attributes):
         '''
         Toggle all devices and set attributes
         Return list of responses
         If there is just one device, return the first element of such a list
         '''
         result = []
-        for device in self.devices:
+        if if_available:
+            states = self.get_state()
+
+        for i, device in enumerate(self.devices):
+            if if_available and states[i].get("state") == 'unavailable':
+                continue
             result.append(self.api_layer.toggle(device["entity_id"], device["type"], **attributes))
 
         return self._refine(result)
