@@ -51,7 +51,7 @@ class Kitchen:
             return event.get("new_state").get("event_type") == "initial_press"
         
         @self.listener.trigger_when(button_4_pressed)
-        def toggle_string_lights(self):
+        def toggle_string_lights(event):
             self.string_lights.toggle()
 
     @script
