@@ -63,12 +63,12 @@ class Kitchen:
 
             if not self.all_lights_off(lights) or not self.all_lights_off(living_room_lights):
                 # Turn off
-                living_room_lights.turn_off()
-                lights.turn_off()
+                living_room_lights.turn_off(if_available=True)
+                lights.turn_off(if_available=True)
             else:
                 # Turn on
-                living_room_lights.turn_on(**self.default_light_settings)
-                lights.turn_on(**self.default_light_settings)
+                living_room_lights.turn_on(if_available=True, **self.default_light_settings)
+                lights.turn_on(if_available=True, **self.default_light_settings)
 
 
     @script
