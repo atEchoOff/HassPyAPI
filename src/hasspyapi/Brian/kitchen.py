@@ -9,11 +9,44 @@ class Kitchen:
         self.listener = listener
 
         self.main_ceiling_light_ip = "192.168.1.206"
+        self.living_room_ceiling_light_ip = "192.168.1.203"
 
         self.lights = home.please().filter(area="Kitchen", type="light", name="!Ceiling")
+        self.living_room_lights = home.please().filter(area="Living Room", type="light", name="!Ceiling")
         self.default_light_settings = {"color_temp_kelvin": 3000, "brightness": 255}
 
+        self.switch1 = home.please().filter(name="Main Room Button 1").get()
+        self.switch2 = home.please().filter(name="Main Room Button 2").get()
+        self.switch3 = home.please().filter(name="Main Room Button 3").get()
+        self.switch4 = home.please().filter(name="Main Room Button 4").get()
+
         start_scripts(self)
+
+    @script
+    def switch_toggle_lights(self):
+        '''
+        Toggle all lights when button 1 is pressed
+        '''
+        def button_1_pressed(event):
+            if not self.switch1.matches(event):
+                return None
+            
+            return event.get("new_state").get("event_type") == "initial_press"
+        
+        @self.listener.trigger_when(button_1_pressed)
+        def toggle_all_lights(event):
+            if is_bulb_online(self.main_ceiling_light_ip):
+                # Turn off all lights
+                self.lights.turn_off()
+                self.living_room_lights.turn_off()
+            else:
+                # Turn on kitchen lights
+                self.lights.turn_on(**self.default_light_settings)
+
+                if is_bulb_online(self.living_room_ceiling_light_ip):
+                    # Also turn on living room lights
+                    self.living_room_lights.turn_on(**self.default_light_settings)
+
 
     @script
     def turn_on_other_lights(self):
