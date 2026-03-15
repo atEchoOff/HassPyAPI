@@ -34,7 +34,7 @@ class Kitchen:
         for attribute in attributes:
             if not attribute.get("brightness"):
                 print(attribute)
-        brightnesses_mismatch = [attribute.get("brightness") > 0 for attribute in attributes]
+        brightnesses_mismatch = [attribute.get("brightness") and attribute.get("brightness") > 0 for attribute in attributes]
         if sum(brightnesses_mismatch) >= 1:
             return False
         else:
